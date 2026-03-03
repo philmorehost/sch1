@@ -97,12 +97,18 @@
 		
 		$all_existing_user_num_count = mysqli_query($connection_server, "SELECT * FROM sm_parents WHERE school_id_number='$school_id'");
 		if(mysqli_num_rows($all_existing_user_num_count) > 0){
+			$last_user_id_number = "";
 			while($each_user_id_number = mysqli_fetch_array($all_existing_user_num_count)){
 				if(date("y") === substr($each_user_id_number["id_number"],0,2)){
 					$last_user_id_number .= substr($each_user_id_number["id_number"],2).",";
 				}
 			}
-			$id_number = date("y").(sprintf("%04d",(max(array_filter(explode(",",trim($last_user_id_number)))))+1));
+			$id_numbers_array = array_filter(explode(",",trim($last_user_id_number)));
+			if(!empty($id_numbers_array)){
+				$id_number = date("y").(sprintf("%04d",(max($id_numbers_array))+1));
+			}else{
+				$id_number = date("y").(sprintf("%04d",1));
+			}
 		}else{
 			$id_number = date("y").(sprintf("%04d",1));
 		}
